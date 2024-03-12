@@ -1,0 +1,1 @@
+﻿pandoc myfile.md -o test2.pdf --resource-path=assets

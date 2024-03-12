@@ -11,4 +11,10 @@
     <ProjectReference Include="..\MD2PandocCL\MD2PandocCL.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <None Update="pandoccreatefile.bat">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
 </Project>

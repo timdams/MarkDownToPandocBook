@@ -7,6 +7,8 @@ namespace ConsoleTester
 {
     internal class Program
     {
+        //test batch file pandoc myfile.md -o test2.pdf --resource-path=assets
+
         static void Main(string[] args)
         {
             Console.WriteLine("Hello, World!");
@@ -17,7 +19,7 @@ namespace ConsoleTester
 
             var res = MD2PandocCL.Gitbook2PandocParser.SummaryParser(Path.Combine(basedir, testfile));
 
-            var log = Gitbook2PandocParser.CreateMegaMarkdown(res, basedir, "myfile.md", true);
+            var log = Gitbook2PandocParser.CreateMegaMarkdown(res, basedir, "myfile.md", "trial", true);
 
             foreach (var logitem in log)
             {
