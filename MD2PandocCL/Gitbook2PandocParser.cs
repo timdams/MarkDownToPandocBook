@@ -2,6 +2,7 @@
 using System.Diagnostics;
 using System.Text;
 using System.Text.RegularExpressions;
+using static System.Net.Mime.MediaTypeNames;
 
 namespace MD2PandocCL
 {
@@ -28,8 +29,7 @@ namespace MD2PandocCL
 
         public static List<string> CreateMegaMarkdown(List<string> sourceFiles, string basesourceUrl, string targetFile, string targetFolder, bool overWrite = false)
         {
-            List<string> log = new List<string>();
-            log.Add("\nMegaMarkdown begonne");
+            List<string> log = ["\nMegaMarkdown begonne"];
             var fullTargetFilePath = Path.Combine(targetFolder, targetFile);
             if (File.Exists(fullTargetFilePath) && !overWrite)
             {
@@ -48,7 +48,7 @@ namespace MD2PandocCL
                 if (File.Exists(fullFilePath))
                 {
                     allText.Append(File.ReadAllText(fullFilePath));
-
+                    allText.Append(@"\newpage");
                 }
                 else
                 {
@@ -61,7 +61,7 @@ namespace MD2PandocCL
 
             var cleanedUP = CleanUpMarkdown(allText.ToString());
 
-
+            cleanedUP = ConvertBlurbs(cleanedUP);
 
             //assets
             var targetassetFolder = Path.Combine(targetFolder, "assets");
@@ -73,6 +73,15 @@ namespace MD2PandocCL
             File.WriteAllText(fullTargetFilePath, cleanedUP);
             log.Add("MegaMarkdown geeindigd. Hoera");
             return log;
+        }
+
+        private static string ConvertBlurbs(string text)
+        {
+            text = text.Replace("{% hint style='danger' %}", "::: important");
+            text = text.Replace("{% hint style='warning' %}", "::: warning");
+            text = text.Replace("{% hint style='tip' %}", "::: tip");
+            text = text.Replace("{% endhint %}", ":::" + Environment.NewLine);
+            return text;
         }
 
         private static string? CleanUpMarkdown(string v)

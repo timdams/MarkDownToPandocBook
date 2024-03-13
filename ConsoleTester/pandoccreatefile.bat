@@ -1,1 +1,1 @@
-﻿pandoc myfile.md -o test2.pdf --resource-path=assets
+﻿pandoc metadata.yaml myfile.md -o test2.pdf --resource-path=assets --template templates/eisvogel  --number-sections --variable toc-own-page=true --variable book=true  --top-level-division=chapter  --filter pandoc-latex-environment  --self-contained

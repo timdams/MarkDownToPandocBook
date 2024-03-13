@@ -19,7 +19,7 @@ namespace ConsoleTester
 
             var res = MD2PandocCL.Gitbook2PandocParser.SummaryParser(Path.Combine(basedir, testfile));
 
-            var log = Gitbook2PandocParser.CreateMegaMarkdown(res, basedir, "myfile.md", "trial", true);
+            var log = Gitbook2PandocParser.CreateMegaMarkdown(res, basedir, "myfile.md", "", true);
 
             foreach (var logitem in log)
             {

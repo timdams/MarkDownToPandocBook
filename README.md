@@ -2,5 +2,6 @@
 
 Todos
 
-* summary.md parsen naar pandoc batchbestand
-* 
+* template mee embedden
+* image size
+* hint/warning boxen

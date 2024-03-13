@@ -1,0 +1,28 @@
+﻿<Window x:Class="Gitbook2PandocUI.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:Gitbook2PandocUI"
+        mc:Ignorable="d"
+        Title="MainWindow" Height="450" Width="800">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="auto"></RowDefinition>
+            
+            <RowDefinition></RowDefinition>
+            <RowDefinition Height="auto"></RowDefinition>
+        </Grid.RowDefinitions>
+        <Button Name="selSummaryFileButton" Click="selSummaryFileButton_Click">Select summary.md file</Button>
+        <ScrollViewer Grid.Row="1">
+            <ListBox Name="lbFiles">
+                <ListBox.ItemTemplate>
+                    <DataTemplate>
+                        <TextBlock Text="{Binding}"></TextBlock>
+                    </DataTemplate>
+                </ListBox.ItemTemplate>
+            </ListBox>
+        </ScrollViewer>
+        <Button Grid.Row="2" Name="btnCreateSinglePandocFile" IsEnabled="false" Click="btnCreateSinglePandocFile_Click">Do magic</Button>
+    </Grid>
+</Window>

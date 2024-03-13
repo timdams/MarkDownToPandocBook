@@ -12,6 +12,9 @@
   </ItemGroup>
 
   <ItemGroup>
+    <None Update="metadata.yaml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Update="pandoccreatefile.bat">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
