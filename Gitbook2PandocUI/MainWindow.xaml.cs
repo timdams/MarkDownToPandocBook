@@ -1,14 +1,8 @@
 ﻿using MD2PandocCL;
-using System.Text;
+using Microsoft.Win32;
+
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
+
 
 namespace Gitbook2PandocUI
 {
@@ -59,10 +53,32 @@ namespace Gitbook2PandocUI
 
         private void btnCreateSinglePandocFile_Click(object sender, RoutedEventArgs e)
         {
-            //Todo iets meer controle op verwijederen stuff
-            //Todo vragen aan gebruiker waar het moet gezet worden
-            //Todo "done" tonen
-            var log = Gitbook2PandocParser.CreateMegaMarkdown(items, System.IO.Path.GetDirectoryName(summaryPath), "myfile.md", "", true);
+
+            var folder = new OpenFolderDialog
+            {
+                Title = "Kies locatie"
+            };
+
+            if (folder.ShowDialog() == true)
+            {
+                string texfile = "myfile.md";
+                string fullFile = System.IO.Path.Combine(folder.FolderName, texfile);
+                if (System.IO.File.Exists(fullFile))
+                {
+                    if (MessageBox.Show("Hier staat reeds een myfile.md bestand. Dit wordt overschreven. Ben je zeker?", "Opgelet", MessageBoxButton.YesNoCancel, MessageBoxImage.Exclamation) == MessageBoxResult.No)
+                    { return; }
+                }
+
+                var log = Gitbook2PandocParser.CreateMegaMarkdown(
+                    items,
+                    System.IO.Path.GetDirectoryName(summaryPath),
+                   texfile,
+                    folder.FolderName,
+                    true);
+                MessageBox.Show("Donzo!","Hoera",MessageBoxButton.OK,MessageBoxImage.Information);
+            }
+
+
         }
     }
 }
