@@ -98,6 +98,8 @@ namespace MD2PandocCL
                 $"--resource-path=assets " +
                 $"--template templates\\{fileNameTemplate} " +
                 $"--number-sections " +
+                $"--from markdown " +
+                $"--listings " +
                 $"--variable toc-own-page=true " +
                 $"--variable book=true " +
                 $"--top-level-division=chapter " +
