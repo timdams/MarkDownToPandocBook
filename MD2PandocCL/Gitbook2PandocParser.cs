@@ -71,6 +71,11 @@ namespace MD2PandocCL
             cleanedUP = cleanedUP.Replace("../assets/", "");
 
             File.WriteAllText(fullTargetFilePath, cleanedUP);
+            //template eisvogel
+            string fileNameTemplate = "eisvogel.latex";
+            var fullPathTemplate = System.IO.Path.Combine(targetFolder, fileNameTemplate);
+            File.WriteAllBytes(fullPathTemplate, Resource1.eisvogel);
+
             log.Add("MegaMarkdown geeindigd. Hoera");
             return log;
         }
