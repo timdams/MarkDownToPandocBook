@@ -5,7 +5,7 @@ Todos
 * template mee embedden
 * image size
 * yaml en batch bestand creeren (vanuit dll als resource?)
-
+* WPF: folder locaties onthouden
  
 # Optional:
 

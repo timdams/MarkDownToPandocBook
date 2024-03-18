@@ -53,7 +53,9 @@ namespace MD2PandocCL
                 if (File.Exists(fullFilePath))
                 {
                     allText.Append(File.ReadAllText(fullFilePath));
+                    allText.Append(Environment.NewLine);
                     allText.Append(@"\newpage");
+                    allText.Append(Environment.NewLine);
                 }
                 else
                 {
@@ -92,7 +94,7 @@ namespace MD2PandocCL
         }
         private static void AddBatchscript(string targetFolder, string mdfilepath, string fileNameTemplate)
         {
-            string fullscript= $"pandoc metadata.yaml {mdfilepath} - o book.pdf " +
+            string fullscript= $"pandoc metadata.yaml {mdfilepath} -o book.pdf " +
                 $"--resource-path=assets " +
                 $"--template templates\\{fileNameTemplate} " +
                 $"--number-sections " +
@@ -104,6 +106,9 @@ namespace MD2PandocCL
 
             var scriptPath = System.IO.Path.Combine(targetFolder, "makebook.bat");
             File.WriteAllText(scriptPath, fullscript);
+
+            var scriptPathVerbose = System.IO.Path.Combine(targetFolder, "makebook-verbose.bat");
+            File.WriteAllText(scriptPath, fullscript+ " --verbose");
         }
         private static string ConvertBlurbs(string text)
         {
