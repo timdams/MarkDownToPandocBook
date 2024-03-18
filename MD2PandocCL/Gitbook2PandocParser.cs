@@ -1,8 +1,13 @@
 ﻿
+using System;
 using System.Diagnostics;
+using System.IO;
+using System.Reflection.Emit;
 using System.Text;
 using System.Text.RegularExpressions;
+using static System.Collections.Specialized.BitVector32;
 using static System.Net.Mime.MediaTypeNames;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace MD2PandocCL
 {
@@ -72,14 +77,34 @@ namespace MD2PandocCL
 
             File.WriteAllText(fullTargetFilePath, cleanedUP);
             //template eisvogel
-            string fileNameTemplate = "eisvogel.latex";
+            Directory.CreateDirectory(System.IO.Path.Combine(targetFolder, "templates"));
+            string fileNameTemplate = "templates\\eisvogel.latex";
             var fullPathTemplate = System.IO.Path.Combine(targetFolder, fileNameTemplate);
             File.WriteAllBytes(fullPathTemplate, Resource1.eisvogel);
+
+            //TODO: yamlfile
+
+            //batchfile
+            AddBatchscript(targetFolder, targetFile, System.IO.Path.GetFileName(fileNameTemplate));
 
             log.Add("MegaMarkdown geeindigd. Hoera");
             return log;
         }
+        private static void AddBatchscript(string targetFolder, string mdfilepath, string fileNameTemplate)
+        {
+            string fullscript= $"pandoc metadata.yaml {mdfilepath} - o book.pdf " +
+                $"--resource-path=assets " +
+                $"--template templates\\{fileNameTemplate} " +
+                $"--number-sections " +
+                $"--variable toc-own-page=true " +
+                $"--variable book=true " +
+                $"--top-level-division=chapter " +
+                $"--filter pandoc-latex-environment " +
+                $"--self-contained";
 
+            var scriptPath = System.IO.Path.Combine(targetFolder, "makebook.bat");
+            File.WriteAllText(scriptPath, fullscript);
+        }
         private static string ConvertBlurbs(string text)
         {
             text = text.Replace("{% hint style='danger' %}", "::: important");
@@ -88,10 +113,8 @@ namespace MD2PandocCL
             text = text.Replace("{% endhint %}", ":::" + Environment.NewLine);
             return text;
         }
-
         private static string? CleanUpMarkdown(string v)
         {
-
             return v;
         }
 
