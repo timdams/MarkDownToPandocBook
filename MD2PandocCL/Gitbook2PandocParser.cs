@@ -99,7 +99,7 @@ namespace MD2PandocCL
                 $"--template templates\\{fileNameTemplate} " +
                 $"--number-sections " +
                 $"--from markdown " +
-                $"--listings " +
+              //  $"--listings " +
                 $"--variable toc-own-page=true " +
                 $"--variable book=true " +
                 $"--top-level-division=chapter " +
