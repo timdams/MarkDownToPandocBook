@@ -32,7 +32,7 @@ namespace MD2PandocCL
 
         }
 
-        public static List<string> CreateMegaMarkdown(List<string> sourceFiles, string basesourceUrl, string targetFile, string targetFolder, bool overWrite = false)
+        public static List<string> CreateMegaMarkdown(List<string> sourceFiles, string basesourceUrl, string targetFile, string targetFolder,string metadata, bool overWrite = false)
         {
             List<string> log = ["\nMegaMarkdown begonne"];
             var fullTargetFilePath = Path.Combine(targetFolder, targetFile);
@@ -85,7 +85,13 @@ namespace MD2PandocCL
             File.WriteAllBytes(fullPathTemplate, Resource1.eisvogel);
 
             //TODO: yamlfile
-
+            if(metadata=="")
+            {
+                metadata = Resource1.metadata;
+            }
+            var scriptPath = System.IO.Path.Combine(targetFolder, "metadata.yaml");
+            File.WriteAllText(scriptPath, metadata);
+            
             //batchfile
             AddBatchscript(targetFolder, targetFile, System.IO.Path.GetFileName(fileNameTemplate));
 
@@ -99,7 +105,7 @@ namespace MD2PandocCL
                 $"--template templates\\{fileNameTemplate} " +
                 $"--number-sections " +
                 $"--from markdown " +
-              //  $"--listings " +
+                $"--listings " +
                 $"--variable toc-own-page=true " +
                 $"--variable book=true " +
                 $"--top-level-division=chapter " +

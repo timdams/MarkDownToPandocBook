@@ -69,5 +69,31 @@ namespace MD2PandocCL {
                 return ((byte[])(obj));
             }
         }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to ---
+        ///title:  &apos;Cyberboswachters&apos;
+        ///subtitle: &quot;De beste digitale stropers zijn ook de beste cyberboswachters&quot;
+        ///author:
+        ///- Dams Tim
+        ///subject: &quot;security&quot;
+        ///isbn: &quot;9789464486988&quot;
+        ///keywords: [cybersecurity, cryptografie, beveiliging, wifi, stuxnet, hacking]
+        ///colorlinks: true
+        ///titlepage-background: &quot;assets/cover.png&quot;
+        ///lang: &quot;nl&quot;
+        ///listings-disable-line-numbers: false
+        ///listings-no-page-break: true
+        ///book: true
+        ///# geometry: paperheight=9.5in,paperwidth=6.7in,margin=1in
+        ///# fontsize: 10pt
+        ///titlepage: true
+        ///header-includes [rest of string was truncated]&quot;;.
+        /// </summary>
+        internal static string metadata {
+            get {
+                return ResourceManager.GetString("metadata", resourceCulture);
+            }
+        }
     }
 }
