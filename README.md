@@ -6,7 +6,8 @@ Todos
 * image size
 * yaml en batch bestand creeren (vanuit dll als resource?)
 * WPF: folder locaties onthouden
- 
+* Soort previewer voor single .md files => mbv https://marketplace.visualstudio.com/items?itemName=edonet.vscode-command-runner
+
 # Optional:
 
 * Mogelijkheid om files apart te behouden (ipv naar 1 grote md) en dan .bat bestand updaten met deze bestanden.

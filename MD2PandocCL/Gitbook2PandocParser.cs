@@ -68,8 +68,8 @@ namespace MD2PandocCL
 
             var cleanedUP = CleanUpMarkdown(allText.ToString());
 
-            cleanedUP = ConvertBlurbs(cleanedUP);
-
+            cleanedUP = ConvertBlurbs(cleanedUP); //Todo: optioneel maken
+            cleanedUP = UncommentWidthComments(cleanedUP); //Todo: optioneel maken
             //assets
             var targetassetFolder = Path.Combine(targetFolder, "assets");
             if (Directory.Exists(targetassetFolder))
@@ -98,6 +98,18 @@ namespace MD2PandocCL
             log.Add("MegaMarkdown geeindigd. Hoera");
             return log;
         }
+
+        //UncommentWidthComments methode
+        private static string UncommentWidthComments(string cleanedUP)
+        {
+            //<!--{width=20%}--> should be replaced by {width=20%}
+            cleanedUP = cleanedUP.Replace("<!--{width=", "{width=");
+            cleanedUP = cleanedUP.Replace("}-->", "}");
+            return cleanedUP;
+        }
+
+
+
         private static void AddBatchscript(string targetFolder, string mdfilepath, string fileNameTemplate)
         {
             string fullscript= $"pandoc metadata.yaml {mdfilepath} -o book.pdf " +
@@ -110,7 +122,8 @@ namespace MD2PandocCL
                 $"--variable book=true " +
                 $"--top-level-division=chapter " +
                 $"--filter pandoc-latex-environment " +
-                $"--self-contained";
+                $"--self-contained "+
+                $"--toc";
 
             var scriptPath = System.IO.Path.Combine(targetFolder, "makebook.bat");
             File.WriteAllText(scriptPath, fullscript);
@@ -126,6 +139,11 @@ namespace MD2PandocCL
             text = text.Replace("{% endhint %}", ":::" + Environment.NewLine);
             return text;
         }
+
+
+
+
+
         private static string? CleanUpMarkdown(string v)
         {
             return v;
