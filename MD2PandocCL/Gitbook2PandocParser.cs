@@ -32,8 +32,9 @@ namespace MD2PandocCL
 
         }
 
-        public static List<string> CreateMegaMarkdown(List<string> sourceFiles, string basesourceUrl, string targetFile, string targetFolder,string metadata, bool overWrite = false)
+        public static List<string> CreateMegaMarkdown(List<string> sourceFiles, string basesourceUrl, string targetFile, string targetFolder,string metadata,out string batchFile, bool overWrite = false)
         {
+            batchFile = "";
             List<string> log = ["\nMegaMarkdown begonne"];
             var fullTargetFilePath = Path.Combine(targetFolder, targetFile);
             if (File.Exists(fullTargetFilePath) && !overWrite)
@@ -69,7 +70,7 @@ namespace MD2PandocCL
             var cleanedUP = CleanUpMarkdown(allText.ToString());
 
             cleanedUP = ConvertBlurbs(cleanedUP); //Todo: optioneel maken
-            cleanedUP = UncommentWidthComments(cleanedUP); //Todo: optioneel maken
+            cleanedUP = RemoveHtmlComments(cleanedUP); //Todo: optioneel maken
             //assets
             var targetassetFolder = Path.Combine(targetFolder, "assets");
             if (Directory.Exists(targetassetFolder))
@@ -93,26 +94,28 @@ namespace MD2PandocCL
             File.WriteAllText(scriptPath, metadata);
             
             //batchfile
-            AddBatchscript(targetFolder, targetFile, System.IO.Path.GetFileName(fileNameTemplate));
+           batchFile= AddBatchscript(targetFolder, targetFile, System.IO.Path.GetFileName(fileNameTemplate));
 
             log.Add("MegaMarkdown geeindigd. Hoera");
             return log;
         }
 
         //UncommentWidthComments methode
-        private static string UncommentWidthComments(string cleanedUP)
+        private static string RemoveHtmlComments(string cleanedUP)
         {
             //<!--{width=20%}--> should be replaced by {width=20%}
-            cleanedUP = cleanedUP.Replace("<!--{width=", "{width=");
-            cleanedUP = cleanedUP.Replace("}-->", "}");
+            cleanedUP = cleanedUP.Replace("<!--", "");
+            cleanedUP = cleanedUP.Replace("-->", "");
             return cleanedUP;
         }
 
 
 
-        private static void AddBatchscript(string targetFolder, string mdfilepath, string fileNameTemplate)
+        private static string AddBatchscript(string targetFolder, string mdfilepath, string fileNameTemplate)
         {
-            string fullscript= $"pandoc metadata.yaml {mdfilepath} -o book.pdf " +
+            string info = "REM To use this script. Install:\r\nREM 0.Pandoc: https://pandoc.org/installing.html\r\nREM 1.Python: https://www.python.org/downloads/release/python-396/\r\nREM 2.Then:  pip install pandoc-latex-environment \r\nREM 3.MikTex: https://miktex.org/download\r\nREM 4. Make sure to update all packages using \"miktex console\" once before running\r\nREM Eisvogel manual at https://repo.telematika.org/project/wandmalfarbe_pandoc-latex-template/\r\nREM Actual usefull (aka the script) stuff starts now:\r\n";
+
+            string fullscript=info+ $"pandoc metadata.yaml {mdfilepath} -o book.pdf " +
                 $"--resource-path=assets " +
                 $"--template templates\\{fileNameTemplate} " +
                 $"--number-sections " +
@@ -123,13 +126,17 @@ namespace MD2PandocCL
                 $"--top-level-division=chapter " +
                 $"--filter pandoc-latex-environment " +
                 $"--self-contained "+
+                $"--toc-depth=2 " + //todo diepte via optie
                 $"--toc";
+
 
             var scriptPath = System.IO.Path.Combine(targetFolder, "makebook.bat");
             File.WriteAllText(scriptPath, fullscript);
 
             var scriptPathVerbose = System.IO.Path.Combine(targetFolder, "makebook-verbose.bat");
-            File.WriteAllText(scriptPath, fullscript+ " --verbose");
+            File.WriteAllText(scriptPathVerbose, fullscript+ " --verbose");
+
+            return scriptPathVerbose;//Todo info in object steken incl book.pdf path
         }
         private static string ConvertBlurbs(string text)
         {

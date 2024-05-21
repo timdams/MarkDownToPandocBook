@@ -756,19 +756,20 @@ $if(listings)$
 %
 % general listing colors
 %
-\definecolor{listing-background}{HTML}{F7F7F7}
-\definecolor{listing-rule}{HTML}{B3B2B3}
-\definecolor{listing-numbers}{HTML}{B3B2B3}
-\definecolor{listing-text-color}{HTML}{000000}
-\definecolor{listing-keyword}{HTML}{435489}
-\definecolor{listing-keyword-2}{HTML}{1284CA} % additional keywords
-\definecolor{listing-keyword-3}{HTML}{9137CB} % additional keywords
-\definecolor{listing-identifier}{HTML}{435489}
-\definecolor{listing-string}{HTML}{00999A}
-\definecolor{listing-comment}{HTML}{8E8E8E}
+\definecolor{listing-background}{HTML}{F7F7F7} % Witte achtergrond
+\definecolor{listing-rule}{HTML}{808080} % Donkergrijs voor regellijnen
+\definecolor{listing-numbers}{HTML}{808080} % Donkergrijs voor regelnummers
+\definecolor{listing-text-color}{HTML}{000000} % Zwarte tekstkleur
+\definecolor{listing-keyword}{HTML}{0000FF} % Blauw voor sleutelwoorden
+\definecolor{listing-keyword-2}{HTML}{A31515} % Rood voor extra sleutelwoorden
+\definecolor{listing-keyword-3}{HTML}{800080} % Paars voor extra sleutelwoorden
+\definecolor{listing-identifier}{HTML}{000000} % Zwarte identificatiekleur
+\definecolor{listing-string}{HTML}{008000} % Groen voor tekenreeksen
+\definecolor{listing-comment}{HTML}{008000} % Groen voor opmerkingen
+
 
 \lstdefinestyle{eisvogel_listing_style}{
-  language         = java,
+  language         = [Sharp]C,
 $if(listings-disable-line-numbers)$
   xleftmargin      = 0.6em,
   framexleftmargin = 0.4em,

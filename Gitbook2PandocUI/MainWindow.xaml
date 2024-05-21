@@ -5,15 +5,15 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Gitbook2PandocUI"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800">
+        Title="MainWindow" Height="450" Width="800" Loaded="Window_Loaded">
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="*"></ColumnDefinition>
             <ColumnDefinition Width="6*"></ColumnDefinition>
         </Grid.ColumnDefinitions>
         <StackPanel Orientation="Vertical">
-            <TextBlock TextWrapping="Wrap">Notes: -verwijdert html comments -vervangt blurbs door awesomebox </TextBlock>
-            
+            <TextBlock TextWrapping="Wrap">Notes: -verwijdert html comments -vervangt blurbs door awesomebox</TextBlock>
+
         </StackPanel>
         <Grid Grid.Column="1">
             <Grid.RowDefinitions>
@@ -27,7 +27,12 @@
                 <ListBox Name="lbFiles">
                     <ListBox.ItemTemplate>
                         <DataTemplate>
-                            <TextBlock Text="{Binding}"></TextBlock>
+                            <StackPanel Orientation="Horizontal" >
+                                <Button Click="onlykeepthisBtn">Only this</Button>
+                                <TextBlock Text="{Binding}"></TextBlock>
+
+                            </StackPanel>
+
                         </DataTemplate>
                     </ListBox.ItemTemplate>
                 </ListBox>

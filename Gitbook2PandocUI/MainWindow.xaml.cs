@@ -1,7 +1,10 @@
 ﻿using MD2PandocCL;
 using Microsoft.Win32;
-
+using System.CodeDom;
+using System.Collections.ObjectModel;
+using System.Diagnostics;
 using System.Windows;
+using System.Windows.Controls;
 
 
 namespace Gitbook2PandocUI
@@ -11,11 +14,13 @@ namespace Gitbook2PandocUI
     /// </summary>
     public partial class MainWindow : Window
     {
+
         public MainWindow()
         {
             InitializeComponent();
+
         }
-        List<string> items = new List<string>();
+        ObservableCollection<string> items = new ObservableCollection<string>();
         string summaryPath = "";
         private void selSummaryFileButton_Click(object sender, RoutedEventArgs e)
         {
@@ -24,9 +29,9 @@ namespace Gitbook2PandocUI
             dialog.DefaultExt = ".md"; // Default file extension
             dialog.Filter = "Markdown documents (.md)|*.md"; // Filter files by extension
 
-            if(Properties.Settings.Default.lastSourceFolder!="empty")
+            if (Properties.Settings.Default.lastSourceFolder != "empty")
             {
-                dialog.InitialDirectory= Properties.Settings.Default.lastSourceFolder;
+                dialog.InitialDirectory = Properties.Settings.Default.lastSourceFolder;
             }
 
             // Show open file dialog box
@@ -40,9 +45,13 @@ namespace Gitbook2PandocUI
                 // Open document
                 try
                 {
-                    items = MD2PandocCL.Gitbook2PandocParser.SummaryParser(dialog.FileName);
+                    var res = MD2PandocCL.Gitbook2PandocParser.SummaryParser(dialog.FileName);
+                    foreach (var file in res)
+                    {
+                        items.Add(file);
+                    }
                     summaryPath = dialog.FileName;
-                    lbFiles.ItemsSource = items;
+
                     btnCreateSinglePandocFile.IsEnabled = true;
 
                     //kijken of er yaml aanwezig is en vragen of die gebruikt moet worden
@@ -80,7 +89,7 @@ namespace Gitbook2PandocUI
                 Title = "Kies locatie"
             };
 
-            if(Properties.Settings.Default.lastTargetFolder!="empty")
+            if (Properties.Settings.Default.lastTargetFolder != "empty")
             {
                 folder.InitialDirectory = Properties.Settings.Default.lastTargetFolder;
             }
@@ -96,18 +105,35 @@ namespace Gitbook2PandocUI
                     if (MessageBox.Show("Hier staat reeds een myfile.md bestand. Dit wordt overschreven. Ben je zeker?", "Opgelet", MessageBoxButton.YesNoCancel, MessageBoxImage.Exclamation) == MessageBoxResult.No)
                     { return; }
                 }
-             
+                string batch;
                 var log = Gitbook2PandocParser.CreateMegaMarkdown(
-                    items,
+                  items.ToList(),
                     System.IO.Path.GetDirectoryName(summaryPath),
                     texfile,
                     folder.FolderName,
                     metadatadata,
+                    out batch,
                     true);
-                MessageBox.Show("Donzo!", "Hoera", MessageBoxButton.OK, MessageBoxImage.Information);
+                if (MessageBox.Show("Donzo! Wil je dat ik ineens de pdf via pandoc genereer?", "Hoera", MessageBoxButton.YesNo, MessageBoxImage.Question) == MessageBoxResult.Yes)
+                {
+                    Process.Start(batch);
+                    // Process.Start("book.pdf");
+                }
             }
 
 
+        }
+
+        private void onlykeepthisBtn(object sender, RoutedEventArgs e)
+        {
+            var s = (sender as Button).DataContext as string;  //TODO databinding...geen zin in
+            items.Clear();
+            items.Add(s);
+        }
+
+        private void Window_Loaded(object sender, RoutedEventArgs e)
+        {
+            lbFiles.ItemsSource = items;
         }
     }
 }
