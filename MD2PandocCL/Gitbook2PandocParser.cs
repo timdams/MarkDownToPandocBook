@@ -13,6 +13,20 @@ namespace MD2PandocCL
 {
     public class Gitbook2PandocParser
     {
+        public static List<string> SummaryParseFromText(string fileContent)
+        {
+
+
+            //we gaan ervan uit dat iedere file die we nodig hebben tussen haakjes staat in de summary.md file
+            var links = Regex.Matches(fileContent, @"\[.*?\]\((.*?)\)");
+            List<string> resultFiles = new List<string>();
+            foreach (Match link in links)
+            {
+                resultFiles.Add(link.Groups[1].Value.ToString());
+            }
+            return resultFiles;
+
+        }
         public static List<string> SummaryParser(string filePath)
         {
             if (File.Exists(filePath))
@@ -32,7 +46,7 @@ namespace MD2PandocCL
 
         }
 
-        public static List<string> CreateMegaMarkdown(List<string> sourceFiles, string basesourceUrl, string targetFile, string targetFolder,string metadata,out string batchFile, bool overWrite = false)
+        public static List<string> CreateMegaMarkdown(List<string> sourceFiles, string basesourceUrl, string targetFile, string targetFolder, string metadata, out string batchFile, bool overWrite = false)
         {
             batchFile = "";
             List<string> log = ["\nMegaMarkdown begonne"];
@@ -70,12 +84,16 @@ namespace MD2PandocCL
             var cleanedUP = CleanUpMarkdown(allText.ToString());
 
             cleanedUP = ConvertBlurbs(cleanedUP); //Todo: optioneel maken
+
+
+            cleanedUP = ReplaceWithRegEx(cleanedUP, @"hoofdstuk (\d+)", @"hoofdstuk \ref{ch:$1}"); //Todo: optioneel maken
+            cleanedUP = ReplaceWithRegEx(cleanedUP, @"Hoofdstuk (\d+)", @"Hoofdstuk \ref{ch:$1}"); //Todo: optioneel maken
             cleanedUP = RemoveHtmlComments(cleanedUP); //Todo: optioneel maken
             //assets
             var targetassetFolder = Path.Combine(targetFolder, "assets");
             if (Directory.Exists(targetassetFolder))
                 Directory.Delete(targetassetFolder, true);
-             CopyDirectory(Path.Combine(basesourceUrl, "assets"),targetassetFolder , true);
+            CopyDirectory(Path.Combine(basesourceUrl, "assets"), targetassetFolder, true);
             cleanedUP = cleanedUP.Replace("../assets/", "");
 
             File.WriteAllText(fullTargetFilePath, cleanedUP);
@@ -86,18 +104,26 @@ namespace MD2PandocCL
             File.WriteAllBytes(fullPathTemplate, Resource1.eisvogel);
 
             //TODO: yamlfile
-            if(metadata=="")
+            if (metadata == "")
             {
                 metadata = Resource1.metadata;
             }
             var scriptPath = System.IO.Path.Combine(targetFolder, "metadata.yaml");
             File.WriteAllText(scriptPath, metadata);
-            
+
             //batchfile
-           batchFile= AddBatchscript(targetFolder, targetFile, System.IO.Path.GetFileName(fileNameTemplate));
+            batchFile = AddBatchscript(targetFolder, targetFile, System.IO.Path.GetFileName(fileNameTemplate));
 
             log.Add("MegaMarkdown geeindigd. Hoera");
             return log;
+        }
+
+
+        private static string ReplaceWithRegEx(string cleanedUP, string pattern, string replace)
+        {
+
+            // Gebruik Regex.Replace met de IgnoreCase optie
+            return Regex.Replace(cleanedUP, pattern, replace);
         }
 
         //UncommentWidthComments methode
@@ -115,7 +141,7 @@ namespace MD2PandocCL
         {
             string info = "REM To use this script. Install:\r\nREM 0.Pandoc: https://pandoc.org/installing.html\r\nREM 1.Python: https://www.python.org/downloads/release/python-396/\r\nREM 2.Then:  pip install pandoc-latex-environment \r\nREM 3.MikTex: https://miktex.org/download\r\nREM 4. Make sure to update all packages using \"miktex console\" once before running\r\nREM Eisvogel manual at https://repo.telematika.org/project/wandmalfarbe_pandoc-latex-template/\r\nREM Actual usefull (aka the script) stuff starts now:\r\n";
 
-            string fullscript=info+ $"pandoc metadata.yaml {mdfilepath} -o book.pdf " +
+            string fullscript = info + $"pandoc metadata.yaml {mdfilepath} -o book.pdf " +
                 $"--resource-path=assets " +
                 $"--template templates\\{fileNameTemplate} " +
                 $"--number-sections " +
@@ -125,7 +151,7 @@ namespace MD2PandocCL
                 $"--variable book=true " +
                 $"--top-level-division=chapter " +
                 $"--filter pandoc-latex-environment " +
-                $"--self-contained "+
+                $"--self-contained " +
                 $"--toc-depth=2 " + //todo diepte via optie
                 $"--toc";
 
@@ -134,7 +160,10 @@ namespace MD2PandocCL
             File.WriteAllText(scriptPath, fullscript);
 
             var scriptPathVerbose = System.IO.Path.Combine(targetFolder, "makebook-verbose.bat");
-            File.WriteAllText(scriptPathVerbose, fullscript+ " --verbose");
+            File.WriteAllText(scriptPathVerbose, fullscript + " --verbose");
+
+            var printreadynolinkspath = System.IO.Path.Combine(targetFolder, "makebook-printready.bat");
+            File.WriteAllText(printreadynolinkspath, fullscript.Replace("book.pdf", "printready.pdf") + " -V links-as-notes=true --verbose");
 
             return scriptPathVerbose;//Todo info in object steken incl book.pdf path
         }
@@ -187,6 +216,11 @@ namespace MD2PandocCL
                     CopyDirectory(subDir.FullName, newDestinationDir, true);
                 }
             }
+        }
+
+        public static List<string>? SummaryParseFromText(object documentSummary)
+        {
+            throw new NotImplementedException();
         }
     }
 }

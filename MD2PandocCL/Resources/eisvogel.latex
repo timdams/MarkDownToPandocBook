@@ -638,13 +638,13 @@ $endif$
 
 %
 % blockquote
-%
-\definecolor{blockquote-border}{RGB}{221,221,221}
-\definecolor{blockquote-text}{RGB}{119,119,119}
+% verwijder itshape indien je niet cursief nodig hebt.
+\definecolor{blockquote-border}{RGB}{255,148,18}
+\definecolor{blockquote-text}{RGB}{0,0,0}
 \usepackage{mdframed}
-\newmdenv[rightline=false,bottomline=false,topline=false,linewidth=3pt,linecolor=blockquote-border,skipabove=\parskip]{customblockquote}
-\renewenvironment{quote}{\begin{customblockquote}\list{}{\rightmargin=0em\leftmargin=0em}%
-\item\relax\color{blockquote-text}\ignorespaces}{\unskip\unskip\endlist\end{customblockquote}}
+\newmdenv[rightline=false,bottomline=false,topline=false,linewidth=5pt,linecolor=blockquote-border,skipabove=\parskip]{customblockquote}
+\renewenvironment{quote}{\begin{customblockquote}\list{}{\rightmargin=0em\leftmargin=1em}%
+\item\relax\color{blockquote-text}\ignorespaces\itshape}{\unskip\unskip\endlist\end{customblockquote}}
 
 %
 % Source Sans Pro as the default font family
@@ -794,6 +794,7 @@ $endif$
   belowskip        = 0.1em,
   abovecaptionskip = 0em,
   belowcaptionskip = 1.0em,
+  morekeywords     = { get,set, var, sealed, partial, region},
   keywordstyle     = {\color{listing-keyword}\bfseries},
   keywordstyle     = {[2]\color{listing-keyword-2}\bfseries},
   keywordstyle     = {[3]\color{listing-keyword-3}\bfseries\itshape},
@@ -894,7 +895,7 @@ $else$
   % \rfoot[$if(footer-left)$$footer-left$$else$$for(author)$$author$$sep$, $endfor$$endif$]{$if(footer-right)$$footer-right$$else$\thepage$endif$}
   \rfoot[$if(footer-left)$$footer-left$$endif$]{$if(footer-right)$$footer-right$$else$\thepage$endif$}
   \renewcommand{\headrulewidth}{0.4pt}
-  \renewcommand{\footrulewidth}{0.4pt}
+  \renewcommand{\footrulewidth}{0pt} %Tim: zet op 0.4 voor lijn boven footer
 }
 \pagestyle{eisvogel-header-footer}
 

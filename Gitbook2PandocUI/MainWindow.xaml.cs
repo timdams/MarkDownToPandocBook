@@ -28,7 +28,7 @@ namespace Gitbook2PandocUI
             dialog.FileName = "summary"; // Default file name
             dialog.DefaultExt = ".md"; // Default file extension
             dialog.Filter = "Markdown documents (.md)|*.md"; // Filter files by extension
-
+            items.Clear();
             if (Properties.Settings.Default.lastSourceFolder != "empty")
             {
                 dialog.InitialDirectory = Properties.Settings.Default.lastSourceFolder;
@@ -45,7 +45,19 @@ namespace Gitbook2PandocUI
                 // Open document
                 try
                 {
-                    var res = MD2PandocCL.Gitbook2PandocParser.SummaryParser(dialog.FileName);
+                    List<string> res = null;
+                    SubSetSummary subSetSummary = new SubSetSummary();
+                    subSetSummary.DocumentSummaryPath = dialog.FileName;
+                    subSetSummary.ShowDialog();
+                    if (subSetSummary.WantsSubset)
+                    {
+                        res = MD2PandocCL.Gitbook2PandocParser.SummaryParseFromText(subSetSummary.DocumentSummary);
+                    }
+                    else
+                    {
+                        res = MD2PandocCL.Gitbook2PandocParser.SummaryParser(dialog.FileName);
+                    }
+                    
                     foreach (var file in res)
                     {
                         items.Add(file);
@@ -114,9 +126,9 @@ namespace Gitbook2PandocUI
                     metadatadata,
                     out batch,
                     true);
-                if (MessageBox.Show("Donzo! Wil je dat ik ineens de pdf via pandoc genereer?", "Hoera", MessageBoxButton.YesNo, MessageBoxImage.Question) == MessageBoxResult.Yes)
+                if (MessageBox.Show("Donzo! Wil je dat ik ineens de pdf via pandoc genereer (werkt nog niet)?", "Hoera", MessageBoxButton.YesNo, MessageBoxImage.Question) == MessageBoxResult.Yes)
                 {
-                    Process.Start(batch);
+                //    Process.Start(batch);
                     // Process.Start("book.pdf");
                 }
             }
